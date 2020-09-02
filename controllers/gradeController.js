@@ -1,12 +1,55 @@
 import { db } from '../models/index.js';
 import { logger } from '../config/logger.js';
+import { gradeModel } from '../models/gradesModel.js';
+import { acountModel } from '../../../../../trabalho prático/Back/Models/accounts.js';
+import { isNumber } from 'util';
 
-const create = async (req, res) => {
+const create = async (req, _resp) => {
   try {
-    res.send({ message: 'Grade inserido com sucesso' });
+    let body = await req.body;
+
+    if (Object.keys(body).length === 0)
+      _resp.status(400).send({ retorno: 'Requisição sem nenhuma informação' });
+    else if (!body.hasOwnProperty('name') || body.name.length === 0) {
+      _resp
+        .status(400)
+        .send({ retorno: 'parâmetro "name" não informado ou valor vazio' });
+    } else if (!body.hasOwnProperty('subject') || body.subject.length === 0) {
+      _resp
+        .status(400)
+        .send({ retorno: 'parâmetro "subject" não informado ou valor vazio' });
+    } else if (!body.hasOwnProperty('type') || body.type.length === 0) {
+      _resp
+        .status(400)
+        .send({ retorno: 'parâmetro "type" não informado ou valor vazio' });
+    } else if (!body.hasOwnProperty('value') || !isNumber(body.value)) {
+      _resp
+        .status(400)
+        .send({ retorno: 'parâmetro "value" não informado ou valor vazio' });
+    }
+    const existGrade = await gradeModel.find({
+      name: body.name,
+      subject: body.subject,
+      type: body.type,
+      value: body.value,
+    });
+    if (existGrade.length > 0) {
+      _resp.send({
+        message: 'registro já inserito na base de dados',
+        retorno: existGrade,
+      });
+    } else {
+      const retorno = await gradeModel.insertMany({
+        name: body.name,
+        subject: body.subject,
+        type: body.type,
+        value: body.value,
+      });
+      _resp.send({ message: 'Grade inserido com sucesso', retorno: retorno });
+    }
     logger.info(`POST /grade - ${JSON.stringify()}`);
   } catch (error) {
-    res
+    _resp
       .status(500)
       .send({ message: error.message || 'Algum erro ocorreu ao salvar' });
     logger.error(`POST /grade - ${JSON.stringify(error.message)}`);
@@ -23,6 +66,8 @@ const findAll = async (req, res) => {
 
   try {
     logger.info(`GET /grade`);
+    const grades = await gradeModel.find({});
+    res.send(grades);
   } catch (error) {
     res
       .status(500)
@@ -36,34 +81,56 @@ const findOne = async (req, res) => {
 
   try {
     logger.info(`GET /grade - ${id}`);
+    const grades = await gradeModel.find({ _id: id });
+    res.send(grades);
   } catch (error) {
     res.status(500).send({ message: 'Erro ao buscar o Grade id: ' + id });
     logger.error(`GET /grade - ${JSON.stringify(error.message)}`);
   }
 };
 
-const update = async (req, res) => {
-  if (!req.body) {
-    return res.status(400).send({
-      message: 'Dados para atualizacao vazio',
-    });
-  }
-
-  const id = req.params.id;
-
+const update = async (_req, _resp) => {
+  const id = await _req.params.id;
   try {
-    logger.info(`PUT /grade - ${id} - ${JSON.stringify(req.body)}`);
+    let body = await _req.body;
+
+    if (Object.keys(body).length === 0)
+      _resp.status(400).send({ retorno: 'Requisição sem nenhuma informação' });
+    else if (!body.hasOwnProperty('name') || body.name.length === 0) {
+      _resp
+        .status(400)
+        .send({ retorno: 'parâmetro "name" não informado ou valor vazio' });
+    } else if (!body.hasOwnProperty('subject') || body.subject.length === 0) {
+      _resp
+        .status(400)
+        .send({ retorno: 'parâmetro "subject" não informado ou valor vazio' });
+    } else if (!body.hasOwnProperty('type') || body.type.length === 0) {
+      _resp
+        .status(400)
+        .send({ retorno: 'parâmetro "type" não informado ou valor vazio' });
+    } else if (!body.hasOwnProperty('value') || !isNumber(body.value)) {
+      _resp
+        .status(400)
+        .send({ retorno: 'parâmetro "value" não informado ou valor vazio' });
+    }
+
+    const data = await gradeModel.findByIdAndUpdate({ _id: Object(id) }, body, {
+      new: true,
+    });
+    _resp.send({ message: 'Grade atualizada com sucesso', retorno: data });
   } catch (error) {
-    res.status(500).send({ message: 'Erro ao atualizar a Grade id: ' + id });
+    _resp.status(500).send({ message: 'Erro ao atualizar a Grade id: ' + id });
     logger.error(`PUT /grade - ${JSON.stringify(error.message)}`);
   }
 };
 
-const remove = async (req, res) => {
-  const id = req.params.id;
+const remove = async (_req, _resp) => {
+  const id = await _req.params.id;
 
   try {
     logger.info(`DELETE /grade - ${id}`);
+    const data = await gradeModel.deleteOne({ _id: Object(id) });
+    _resp.send(data);
   } catch (error) {
     res
       .status(500)
@@ -72,11 +139,15 @@ const remove = async (req, res) => {
   }
 };
 
-const removeAll = async (req, res) => {
+const removeAll = async (_req, _resp) => {
   try {
     logger.info(`DELETE /grade`);
+    const data = await gradeModel.remove({});
+    _resp.send(data);
   } catch (error) {
-    res.status(500).send({ message: 'Erro ao excluir todos as Grades' });
+    _resp
+      .status(500)
+      .send({ message: 'Erro ao excluir todos as Grades' + error });
     logger.error(`DELETE /grade - ${JSON.stringify(error.message)}`);
   }
 };

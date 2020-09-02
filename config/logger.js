@@ -14,7 +14,9 @@ const logger = createLogger({
     new transports.Console(),
     new transports.MongoDB({
       level: 'info',
-      db: process.env.MONGODB,
+      // db: process.env.MONGODB,
+      db:
+        'mongodb+srv://igtiUser:Igti2020@igti.mq8zz.mongodb.net/IGTI?retryWrites=true&w=majority',
       collection: 'logs_grades',
       capped: true,
       cappedMax: 20,
