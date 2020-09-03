@@ -2,8 +2,9 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { gradeRouter } from './routes/gradeRouter.js';
-
 import { db } from './models/index.js';
+
+require('dotenv').config();
 
 (async () => {
   try {
@@ -23,10 +24,8 @@ import { db } from './models/index.js';
     process.exit();
   }
 })();
-
 const app = express();
 app.use(cors());
-
 //define o dominio de origem para consumo do servico
 app.use(bodyParser.json());
 app.use(gradeRouter);
