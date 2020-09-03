@@ -4,8 +4,6 @@ import cors from 'cors';
 import { gradeRouter } from './routes/gradeRouter.js';
 import { db } from './models/index.js';
 
-require('dotenv').config();
-
 (async () => {
   try {
     console.log('inicia conexão com banco de dados');
@@ -30,20 +28,6 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(gradeRouter);
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(
-//   cors({
-//     origin: 'http://localhost:3000',
-//   })
-// );
-
-// app.use(function (req, res, next) {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header(
-//     'Access-Control-Allow-Headers',
-//     'Origin, X-Requested-With, Content-Type, Accept'
-//   );
-//   next();
-// });
 
 app.get('/', (req, res) => {
   res.send('API em execucao');
