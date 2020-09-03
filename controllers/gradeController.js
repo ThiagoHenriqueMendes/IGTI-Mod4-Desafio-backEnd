@@ -65,14 +65,14 @@ const findAll = async (req, res) => {
     : {};
 
   try {
-    logger.info(`GET /grade`);
+    logger.info(`GET /findAll`);
     const grades = await gradeModel.find({});
     res.send(grades);
   } catch (error) {
     res
       .status(500)
       .send({ message: error.message || 'Erro ao listar todos os documentos' });
-    logger.error(`GET /grade - ${JSON.stringify(error.message)}`);
+    logger.error(`GET /findAll - ${JSON.stringify(error.message)}`);
   }
 };
 
@@ -80,12 +80,26 @@ const findOne = async (req, res) => {
   const id = req.params.id;
 
   try {
-    logger.info(`GET /grade - ${id}`);
+    logger.info(`GET /findOne - ${id}`);
     const grades = await gradeModel.find({ _id: id });
     res.send(grades);
   } catch (error) {
     res.status(500).send({ message: 'Erro ao buscar o Grade id: ' + id });
-    logger.error(`GET /grade - ${JSON.stringify(error.message)}`);
+    logger.error(`GET /findOne - ${JSON.stringify(error.message)}`);
+  }
+};
+
+const findByName = async (req, res) => {
+  // const id = req.params.id;
+
+  try {
+    // logger.info(`GET /grade?name - ${id}`);
+    // console.log(id);
+    // const grades = await gradeModel.find({ _id: id });
+    res.send('entrou');
+  } catch (error) {
+    res.status(500).send({ message: 'Erro ao buscar o Grade id: ' + id });
+    logger.error(`GET /findByName - ${JSON.stringify(error.message)}`);
   }
 };
 
@@ -152,4 +166,12 @@ const removeAll = async (_req, _resp) => {
   }
 };
 
-export default { create, findAll, findOne, update, remove, removeAll };
+export default {
+  create,
+  findAll,
+  findOne,
+  findByName,
+  update,
+  remove,
+  removeAll,
+};
