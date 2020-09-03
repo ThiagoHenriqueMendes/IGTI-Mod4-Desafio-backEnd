@@ -1,5 +1,5 @@
 import winston from 'winston';
-import winstondb from 'winston-mongodb';
+// import winstondb from 'winston-mongodb';
 
 const { combine, timestamp, label, printf } = winston.format;
 

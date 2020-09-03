@@ -1,6 +1,7 @@
-import { db } from '../models/index.js';
+// import { db } from '../models/index.js';
 import { logger } from '../config/logger.js';
 import { gradeModel } from '../models/gradesModel.js';
+// import { acountModel } from '../../../../../trabalho prático/Back/Models/accounts.js';
 import { isNumber } from 'util';
 
 const create = async (req, _resp) => {
